@@ -5,6 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.record.OVertex;
+import com.syncleus.ferma.FramedGraph;
+import com.syncleus.ferma.tx.Tx;
+import com.syncleus.ferma.tx.TxFactory;
+import com.vibeconn.models.Person;
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
 import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
@@ -15,7 +19,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Path("/hello")
 public class GreetingResource {
@@ -24,6 +30,10 @@ public class GreetingResource {
     OrientGraph graph;
     @Inject
     ODatabaseSession dbSession;
+    @Inject
+    FramedGraph framedGraph;
+    @Inject
+    TxFactory txFactory;
 
     @GET
     @Path("/gremlinVertex")
@@ -46,6 +56,21 @@ public class GreetingResource {
       vertex.save();
       dbSession.close();
      return vertex.getIdentity().toString();
+    }
+
+    @POST
+    @Path("/framedVertex")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String addFramedVertex(){
+        Date d = new Date();
+        Tx tx = txFactory.tx();
+        System.out.println("start transaction"+new Date().getTime());
+       Person person = tx.getGraph().addFramedVertex(Person.class);
+       person.setName("Pallavi"+d);
+       tx.commit();
+        tx.success();
+        System.out.println("end transaction"+new Date().getTime());
+        return person.getId().toString();
     }
 
 
