@@ -5,7 +5,6 @@ import com.syncleus.ferma.ext.AbstractInterceptingEdgeFrame;
 
 import java.util.Date;
 
-@GraphElement
 public class Follows extends AbstractInterceptingEdgeFrame {
 
     public void setLabel(){

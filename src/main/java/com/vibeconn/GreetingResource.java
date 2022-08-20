@@ -15,10 +15,7 @@ import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,12 +73,12 @@ public class GreetingResource {
     @POST
     @Path("/framedEdge")
     @Produces(MediaType.TEXT_PLAIN)
-    public String addFramedEdge(){
+    public String addFramedEdge(@QueryParam("from") String from,@QueryParam("to") String to){
         Date d = new Date();
         System.out.println("start transaction"+new Date().getTime());
         Tx tx = txFactory.tx();
-        Person person = tx.getGraph().getFramedVertex(Person.class,"#28:698");
-        Person person2 = tx.getGraph().getFramedVertex(Person.class,"#26:517 ");
+        Person person = tx.getGraph().getFramedVertex(Person.class,from);
+        Person person2 = tx.getGraph().getFramedVertex(Person.class,to);
         person.follow(person2);
         tx.commit();
         System.out.println("end transaction"+new Date().getTime());
