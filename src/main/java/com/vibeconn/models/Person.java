@@ -1,6 +1,5 @@
 package com.vibeconn.models;
 
-import com.syncleus.ferma.AbstractVertexFrame;
 import com.syncleus.ferma.annotations.GraphElement;
 import com.syncleus.ferma.ext.AbstractInterceptingVertexFrame;
 
@@ -24,5 +23,13 @@ public class Person extends AbstractInterceptingVertexFrame {
 
     public String getName() {
         return getProperty("name");
+    }
+
+    public void addFriend(Person person){
+        linkOut(person,"FRIEND_OF");
+    }
+
+    public void follow(Person otherPerson){
+        linkOut(otherPerson,"Follows");
     }
 }
