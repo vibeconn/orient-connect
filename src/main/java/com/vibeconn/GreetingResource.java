@@ -49,10 +49,12 @@ public class GreetingResource {
     @Produces(MediaType.TEXT_PLAIN)
     public String addOrientVertex(){
         Date d = new Date();
+        System.out.println("start orient vertex"+new Date().getTime());
         OVertex vertex = dbSession.newVertex("Person");
       vertex.setProperty("name","v"+d);
       vertex.save();
       dbSession.close();
+        System.out.println("end orient vertex"+new Date().getTime());
      return vertex.getIdentity().toString();
     }
 
