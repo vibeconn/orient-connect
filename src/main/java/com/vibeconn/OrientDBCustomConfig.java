@@ -59,7 +59,7 @@ public class OrientDBCustomConfig {
     @Singleton
     @DefaultBean
     TxFactory txFactory(){
-        OrientGraphFactory graphFactory = new OrientGraphFactory("remote:localhost/testgremlin","root","Vibfam@321");
+        OrientGraphFactory graphFactory = new OrientGraphFactory("remote:localhost/testgremlin","root","Vibfam@321").setupPool(5,50);
         OrientTransactionFactory graph = new OrientTransactionFactoryImpl(graphFactory,false,"com.vibeconn.models");
         graph.setupElementClasses();
         return graph;
