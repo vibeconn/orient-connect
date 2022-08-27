@@ -41,12 +41,14 @@ public class OrientDBCustomConfig {
 //        return graph;
     }
 
-    OrientDB orient = new OrientDB("remote:localhost", OrientDBConfig.defaultConfig());
-    ODatabasePool pool =  new ODatabasePool(orient, "testgremlin", "root", "Vibfam@321");
+
 
     @RequestScoped
     @DefaultBean
-    ODatabaseSession dbSession(){
+    ODatabaseSession dbSession()
+    {
+        OrientDB orient = new OrientDB("remote:localhost", OrientDBConfig.defaultConfig());
+        ODatabasePool pool =  new ODatabasePool(orient, "testgremlin", "root", "Vibfam@321");
         return pool.acquire();
     }
 
@@ -62,6 +64,7 @@ public class OrientDBCustomConfig {
         OrientGraphFactory graphFactory = new OrientGraphFactory("remote:localhost/testgremlin","root","Vibfam@321").setupPool(5,50);
         OrientTransactionFactory graph = new OrientTransactionFactoryImpl(graphFactory,false,"com.vibeconn.models");
         graph.setupElementClasses();
+
         return graph;
     }
 

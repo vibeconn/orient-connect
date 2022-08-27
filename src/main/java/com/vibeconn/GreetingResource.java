@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.record.OVertex;
+import com.orientechnologies.orient.core.sql.executor.OResult;
+import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import com.syncleus.ferma.FramedGraph;
 import com.syncleus.ferma.tx.Tx;
 import com.syncleus.ferma.tx.TxFactory;
@@ -12,6 +14,7 @@ import com.vibeconn.models.Follows;
 import com.vibeconn.models.Person;
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
 import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import javax.inject.Inject;
@@ -19,6 +22,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Path("/hello")
@@ -107,6 +111,47 @@ public class GreetingResource {
         });
         System.out.println("mapping done "+ new Date().getTime());
         return persons;
+    }
+
+    @Path("/framedList")
+    @GET
+    public List<PersonView> getFramedPersons(){
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        mapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES,false);
+        List<PersonView> persons = new ArrayList<>();
+        System.out.println("time start"+ new Date().getTime());
+        Iterator personIterator = txFactory.tx().getGraph().getFramedVertices(PersonView.class);
+//        fg.traverse(graphTraversalSource -> graphTraversalSource.V("58:0")).next(Person.class);
+//        Iterator personIterator = fg.traverse(GraphTraversalSource::V).frameExplicit(PersonView.class);
+        while (personIterator.hasNext()){
+            persons.add((PersonView)personIterator.next());
+        }
+        System.out.println("mapping done "+ new Date().getTime());
+        return persons;
+    }
+
+    @Path("/orientList")
+    @GET
+    public List<PersonView> getOrientPersons(){
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        mapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES,false);
+        List<PersonView> persons = new ArrayList<>();
+        System.out.println("time start"+ new Date().getTime());
+
+        OResultSet resultSet = dbSession.query("Select * from Person");
+        resultSet.close();
+        System.out.println("db query executed at"+ new Date().getTime());
+
+        while (resultSet.hasNext()) {
+                try {
+                    persons.add(mapper.readValue(resultSet.next().toJSON(), PersonView.class));
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+        }
+        System.out.println("mapping done "+ new Date().getTime());
+//         resultSet.close();
+         return persons;
     }
 }
 
