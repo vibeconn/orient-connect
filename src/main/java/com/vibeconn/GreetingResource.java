@@ -12,7 +12,6 @@ import com.syncleus.ferma.tx.TxFactory;
 import com.vibeconn.models.Person;
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
 import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
-import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import javax.inject.Inject;
@@ -65,7 +64,7 @@ public class GreetingResource {
         Tx tx = txFactory.tx();
         System.out.println("start transaction"+new Date().getTime());
        Person person = tx.getGraph().addFramedVertex(Person.class);
-       person.setName("Kanishk"+d);
+       person.updateName("Kanishk"+d);
         tx.commit();
         System.out.println("end transaction"+new Date().getTime());
         return person.getId().toString();
@@ -90,16 +89,16 @@ public class GreetingResource {
     ObjectMapper mapper = new ObjectMapper();
     @Path("/list")
     @GET
-    public List<Person> getVertices(){
+    public List<PersonView> getVertices(){
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-        List<Person> persons = new ArrayList<>();
+        List<PersonView> persons = new ArrayList<>();
         System.out.println("time start"+ new Date().getTime());
 
-        OGremlinResultSet resultSet = graph.executeSql("select * from Person");
+        OGremlinResultSet resultSet = graph.executeSql("select * from Person limit 200");
         System.out.println("db results fetched "+ new Date().getTime());
         resultSet.stream().forEach(re->{
             try {
-                persons.add(mapper.readValue (re.getRawResult().toJSON(),Person.class));
+                persons.add(mapper.readValue (re.getRawResult().toJSON(),PersonView.class));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

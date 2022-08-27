@@ -8,6 +8,9 @@ public class Person extends AbstractInterceptingVertexFrame {
     private String name;
     private String rid;
 
+    public Person() {
+    }
+
     public Person(String name, String rid) {
         this.name = name;
         this.rid = rid;
@@ -22,6 +25,10 @@ public class Person extends AbstractInterceptingVertexFrame {
     }
 
     public void setName(String name) {
+        this.name = name;
+    }
+
+    public void updateName(String name) {
         setProperty("name", name);
     }
 
