@@ -5,16 +5,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.record.OVertex;
-import com.orientechnologies.orient.core.sql.executor.OResult;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import com.syncleus.ferma.FramedGraph;
 import com.syncleus.ferma.tx.Tx;
 import com.syncleus.ferma.tx.TxFactory;
-import com.vibeconn.models.Follows;
 import com.vibeconn.models.Person;
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
 import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import javax.inject.Inject;
@@ -120,11 +117,11 @@ public class GreetingResource {
         mapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES,false);
         List<PersonView> persons = new ArrayList<>();
         System.out.println("time start"+ new Date().getTime());
-        Iterator personIterator = txFactory.tx().getGraph().getFramedVertices(PersonView.class);
+        Iterator<? extends PersonView> personIterator = txFactory.tx().getGraph().getFramedVertices(PersonView.class);
 //        fg.traverse(graphTraversalSource -> graphTraversalSource.V("58:0")).next(Person.class);
 //        Iterator personIterator = fg.traverse(GraphTraversalSource::V).frameExplicit(PersonView.class);
         while (personIterator.hasNext()){
-            persons.add((PersonView)personIterator.next());
+            persons.add(personIterator.next());
         }
         System.out.println("mapping done "+ new Date().getTime());
         return persons;
@@ -138,8 +135,8 @@ public class GreetingResource {
         List<PersonView> persons = new ArrayList<>();
         System.out.println("time start"+ new Date().getTime());
 
-        OResultSet resultSet = dbSession.query("Select * from Person");
-        resultSet.close();
+        OResultSet resultSet = dbSession.query("Select * from Person limit 10");
+//        resultSet.close();
         System.out.println("db query executed at"+ new Date().getTime());
 
         while (resultSet.hasNext()) {
@@ -149,6 +146,7 @@ public class GreetingResource {
                     e.printStackTrace();
                 }
         }
+        resultSet.close();
         System.out.println("mapping done "+ new Date().getTime());
 //         resultSet.close();
          return persons;
