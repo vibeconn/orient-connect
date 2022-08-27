@@ -12,15 +12,13 @@ import com.syncleus.ferma.tx.TxFactory;
 import com.vibeconn.models.Person;
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
 import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
+import org.apache.tinkerpop.gremlin.structure.T;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Path("/hello")
 public class GreetingResource {
@@ -112,19 +110,19 @@ public class GreetingResource {
 
     @Path("/framedList")
     @GET
-    public List<PersonView> getFramedPersons(){
+    public List<Map<String,Object>> getFramedPersons(){
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
         mapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES,false);
-        List<PersonView> persons = new ArrayList<>();
+        List<Person> persons = new ArrayList<>();
         System.out.println("time start"+ new Date().getTime());
-        Iterator<? extends PersonView> personIterator = txFactory.tx().getGraph().getFramedVertices(PersonView.class);
+        List<Map<String,Object>> elements = txFactory.tx().getGraph().getRawTraversal().V().project("name").by("name").toList();
 //        fg.traverse(graphTraversalSource -> graphTraversalSource.V("58:0")).next(Person.class);
 //        Iterator personIterator = fg.traverse(GraphTraversalSource::V).frameExplicit(PersonView.class);
-        while (personIterator.hasNext()){
-            persons.add(personIterator.next());
-        }
+//        while (personIterator.hasNext()){
+//            persons.add(personIterator.next());
+//        }
         System.out.println("mapping done "+ new Date().getTime());
-        return persons;
+        return elements;
     }
 
     @Path("/orientList")

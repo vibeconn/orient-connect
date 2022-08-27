@@ -8,6 +8,10 @@ public class Person extends AbstractInterceptingVertexFrame {
     private String name;
     private String rid;
 
+    public Person(String name, String rid) {
+        this.name = name;
+        this.rid = rid;
+    }
 
     public String getRid() {
         return rid;
