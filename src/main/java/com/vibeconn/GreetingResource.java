@@ -9,15 +9,20 @@ import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import com.syncleus.ferma.FramedGraph;
 import com.syncleus.ferma.tx.Tx;
 import com.syncleus.ferma.tx.TxFactory;
+import com.vibeconn.mappers.MapToPersonMapper;
 import com.vibeconn.models.Person;
+import com.vibeconn.services.PersonService;
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
 import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.*;
+
+import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.unfold;
 
 @Path("/hello")
 public class GreetingResource {
@@ -30,6 +35,8 @@ public class GreetingResource {
     FramedGraph framedGraph;
     @Inject
     TxFactory txFactory;
+    @Inject
+    PersonService personService;
 
     @GET
     @Path("/gremlinVertex")
@@ -107,21 +114,12 @@ public class GreetingResource {
         return persons;
     }
 
+
+
     @Path("/framedList")
     @GET
-    public List<Map<String,Object>> getFramedPersons(){
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-        mapper.configure(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES,false);
-        List<Person> persons = new ArrayList<>();
-        System.out.println("time start"+ new Date().getTime());
-        List<Map<String,Object>> elements = txFactory.tx().getGraph().getRawTraversal().V().project("name").by("name").toList();
-//        fg.traverse(graphTraversalSource -> graphTraversalSource.V("58:0")).next(Person.class);
-//        Iterator personIterator = fg.traverse(GraphTraversalSource::V).frameExplicit(PersonView.class);
-//        while (personIterator.hasNext()){
-//            persons.add(personIterator.next());
-//        }
-        System.out.println("mapping done "+ new Date().getTime());
-        return elements;
+    public   List<Map<String, Object>> getFramedPersons(){
+        return personService.getFramedPersons();
     }
 
     @Path("/orientList")

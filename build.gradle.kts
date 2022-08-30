@@ -1,6 +1,7 @@
 plugins {
     java
     id("io.quarkus")
+//    id("net.ltgt.apt") version "0.21"
 }
 
 repositories {
@@ -30,6 +31,10 @@ dependencies {
     implementation("com.syncleus.ferma:ferma-orientdb:3.0.1")
     // https://mvnrepository.com/artifact/org.reflections/reflections
     implementation ("org.reflections:reflections:0.10.2")
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
+    implementation("org.mapstruct:mapstruct:1.5.2.Final")
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
+    annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.2.Final")
 
 }
 
