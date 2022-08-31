@@ -23,7 +23,10 @@ dependencies {
     // https://mvnrepository.com/artifact/com.orientechnologies/orientdb-graphdb
     // https://mvnrepository.com/artifact/com.orientechnologies/orientdb-gremlin
     implementation("com.orientechnologies:orientdb-gremlin:3.2.9")
-    implementation("com.orientechnologies:orientdb-client:3.2.9")
+    // https://mvnrepository.com/artifact/com.orientechnologies/orientdb-jdbc
+    implementation("com.orientechnologies:orientdb-jdbc:3.2.9")
+    // https://mvnrepository.com/artifact/com.orientechnologies/orientdb-object
+    implementation("com.orientechnologies:orientdb-object:3.2.9")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
     // https://mvnrepository.com/artifact/com.syncleus.ferma/ferma
