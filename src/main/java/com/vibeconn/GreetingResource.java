@@ -31,8 +31,7 @@ public class GreetingResource {
     OrientGraph graph;
     @Inject
     ODatabaseSession dbSession;
-    @Inject
-    FramedGraph framedGraph;
+
     @Inject
     TxFactory txFactory;
     @Inject
@@ -64,7 +63,7 @@ public class GreetingResource {
     }
 
     @POST
-    @Path("/framedVertex")
+    @Path("/addFramedVertex")
     @Produces(MediaType.TEXT_PLAIN)
     public String addFramedVertex(){
         Date d = new Date();
@@ -78,7 +77,7 @@ public class GreetingResource {
     }
 
     @POST
-    @Path("/framedEdge")
+    @Path("/addFramedEdge")
     @Produces(MediaType.TEXT_PLAIN)
     public String addFramedEdge(@QueryParam("from") String from,@QueryParam("to") String to){
         Date d = new Date();
@@ -94,31 +93,10 @@ public class GreetingResource {
 
 
     ObjectMapper mapper = new ObjectMapper();
-    @Path("/list")
-    @GET
-    public List<PersonView> getVertices(){
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
-        List<PersonView> persons = new ArrayList<>();
-        System.out.println("time start"+ new Date().getTime());
-
-        OGremlinResultSet resultSet = graph.executeSql("select * from Person limit 200");
-        System.out.println("db results fetched "+ new Date().getTime());
-        resultSet.stream().forEach(re->{
-            try {
-                persons.add(mapper.readValue (re.getRawResult().toJSON(),PersonView.class));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        });
-        System.out.println("mapping done "+ new Date().getTime());
-        return persons;
-    }
-
-
 
     @Path("/framedList")
     @GET
-    public   List<Map<String, Object>> getFramedPersons(){
+    public  List<? extends Person> getFramedPersons() throws org.apache.tinkerpop.shaded.jackson.core.JsonProcessingException {
         return personService.getFramedPersons();
     }
 
