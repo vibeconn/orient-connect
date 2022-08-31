@@ -6,23 +6,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.record.OVertex;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
-import com.syncleus.ferma.FramedGraph;
 import com.syncleus.ferma.tx.Tx;
 import com.syncleus.ferma.tx.TxFactory;
-import com.vibeconn.mappers.MapToPersonMapper;
 import com.vibeconn.models.Person;
 import com.vibeconn.services.PersonService;
 import org.apache.tinkerpop.gremlin.orientdb.OrientGraph;
-import org.apache.tinkerpop.gremlin.orientdb.executor.OGremlinResultSet;
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversal;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.*;
-
-import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.unfold;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Path("/hello")
 public class GreetingResource {
