@@ -1,5 +1,6 @@
 package com.vibeconn;
 
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.ODatabasePool;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.OrientDB;
@@ -47,7 +48,11 @@ public class OrientDBCustomConfig {
     @DefaultBean
     ODatabaseSession dbSession()
     {
-        OrientDB orient = new OrientDB("remote:localhost", OrientDBConfig.defaultConfig());
+        OrientDBConfig config = OrientDBConfig.builder()
+                .addConfig(OGlobalConfiguration.DB_POOL_MIN,5)
+                .addConfig(OGlobalConfiguration.DB_POOL_MAX,15)
+                .build();
+        OrientDB orient = new OrientDB("remote:localhost", config);
         ODatabasePool pool =  new ODatabasePool(orient, "testgremlin", "root", "Vibfam@321");
         return pool.acquire();
     }
